@@ -26,19 +26,24 @@ class Particles {
   constructor(num) {
     this.x = random(-width / 4, width + width / 4);
     this.y = random(-height / 4, height + height / 4);
-    this.amx = random(-1, 1);
-    this.amy = random(-1, 1);
+    this.sw = int(random(2));
+    if (this.sw == 0) {
+      this.amx = random(-1, 1);
+      this.amy = 0;
+    } else if (this.sw == 1) {
+      this.amx = 0;
+      this.amy = random(-1, 1);
+
+    }
     this.r = random(w / 18, w / 6);
     this.hue = random([30, 60, 240]);
     this.sat = random([0, 100]);
     this.lgn = random(100);
-    this.xn = random(-this.r, this.r);
-    this.yn = random(-this.r, this.r);
     this.currentAngle = int(random(4)) * 90;
     this.targetAngle = 0;
     this.isRotating = false;
     this.rotateTimer = 0;
-    this.rotateInterval = random(60, 180); 
+    this.rotateInterval = random(60, 180);
   }
 
   update() {
@@ -59,11 +64,21 @@ class Particles {
       this.isRotating = true;
       this.rotateTimer = 0;
       this.rotateInterval = random(60, 180);
+
+      this.sw = int(random(2));
+      if (this.sw == 0) {
+        this.amx = random(-1, 1);
+        this.amy = 0;
+      } else if (this.sw == 1) {
+        this.amx = 0;
+        this.amy = random(-1, 1);
+
+      }
     }
 
     if (this.isRotating) {
       let diff = this.targetAngle - this.currentAngle;
-      this.currentAngle += diff * 0.15; 
+      this.currentAngle += diff * 0.15;
       if (abs(diff) < 0.5) {
         this.currentAngle = this.targetAngle;
         this.isRotating = false;
@@ -73,11 +88,7 @@ class Particles {
 
   display() {
     push();
-    let adx = map(noise(this.xn), 0, 1, -this.r, this.r);
-    let ady = map(noise(this.yn), 0, 1, -this.r, this.r);
-    this.xn += 0.005;
-    this.yn += 0.005;
-    translate(this.x + adx, this.y + ady);
+    translate(this.x, this.y);
 
     rotate(this.currentAngle);
 
@@ -134,7 +145,7 @@ class Particles {
 
 function windowResized() {
   resizeCanvas(windowWidth, windowHeight);
-    for (let i = 0; i < num; i++) {
+  for (let i = 0; i < num; i++) {
     ps[i] = new Particles(num);
   }
 }
